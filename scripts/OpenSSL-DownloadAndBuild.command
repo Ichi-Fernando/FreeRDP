@@ -9,8 +9,8 @@
 
 ## Settings
 # openssl version to use
-OPENSSLVERSION="1.0.2a"
-MD5SUM="a06c547dac9044161a477211049f60ef"
+OPENSSLVERSION="1.0.2h"
+SHA1="577585f5f5d299c44dd3c993d3c0ac7a219e4949"
 # SDK version to use - if not set latest version found is used
 SDK_VERSION=""
 
@@ -98,23 +98,19 @@ if [ ! -d openssl ];then
 	mkdir openssl
 fi
 cd openssl
-CS=`md5 -q "openssl-$OPENSSLVERSION.tar.gz" 2>/dev/null`
-if [ ! "$CS" = "$MD5SUM" ]; then
+CS=`openssl sha1 "openssl-$OPENSSLVERSION.tar.gz" 2>/dev/null`
+if [ ! "$CS" = "$SHA1" ]; then
     echo "Downloading OpenSSL Version $OPENSSLVERSION ..."
     rm -f "openssl-$OPENSSLVERSION.tar.gz"
     curl -o "openssl-$OPENSSLVERSION.tar.gz" http://www.openssl.org/source/openssl-$OPENSSLVERSION.tar.gz
 
-    CS=`md5 -q "openssl-$OPENSSLVERSION.tar.gz" 2>/dev/null`
-    if [ ! "$CS" = "$MD5SUM" ]; then
+    CS=`openssl sha1 "openssl-$OPENSSLVERSION.tar.gz" 2>/dev/null`
+    if [ ! "$CS" = "$SHA1" ]; then
 	echo "Download failed or invalid checksum. Have a nice day."
 	exit 1
     fi
 fi
 
-# remove old build dir
-rm -rf openssltmp
-mkdir openssltmp
-cd openssltmp
 
 echo "Unpacking OpenSSL ..."
 tar xfz "../openssl-$OPENSSLVERSION.tar.gz"
